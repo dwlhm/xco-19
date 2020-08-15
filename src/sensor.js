@@ -2,13 +2,12 @@ const { Sensor } = require('./db/model')
 
 const sensor = async (req, res) => {
 
-    const oxi = req.query.oxi
+    const ht = req.query.oxi
         , temp = req.query.temp
         , cough = req.query.cough
-        , coughO = req.query.cougho
-        , userId = req.headers.id
+        , id = req.query.id
 
-    if (!oxi || !temp || !cough || !userId) {
+    if (!ht || !temp || !cough || !id) {
         res.status(400)
         res.json({msg: 'Fill in the forms carefully'})        
     } else {
@@ -16,8 +15,7 @@ const sensor = async (req, res) => {
             oxy_state: oxi,
             temp_state: temp,
             cough_state: cough,
-            cough_odd: coughO,
-            user_id: userId,
+            user_id: id,
             write_on: new Date()
         }).then(it => true).catch(err => console.log(err))
 
