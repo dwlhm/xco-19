@@ -82,7 +82,7 @@ router.post('/login', async (req, res, next) => {
             return token
         }).catch(err => console.log(err))
 
-        
+        res.status(!secretUpdate ? 401 : 200)
         res.json({msg: secretUpdate})
     }
 
