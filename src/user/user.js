@@ -1,10 +1,8 @@
-const { decode } = require('punycode')
-const { route } = require('../auth/auth')
-
 const express = require('express')
     , router = express.Router()
     , fs = require('fs')
-    , { User, Sensor } = require('../db/model')
+    , { User, Sensor, Location, Zone } = require('../db/model')
+    , axios = require('axios')
 
 router.get('/logout', async (req, res) => {
 
@@ -75,6 +73,9 @@ router.get('/sensor', async (req, res) => {
                                                                         coughState: docs.data().cough_state,
                                                                         tempState: docs.data().temp_state,
                                                                         oxyState: docs.data().oxy_state,
+                                                                        location: docs.data().location,
+                                                                        location_status: docs.data().location_status,
+                                                                        status: docs.data().status,
                                                                         writeOn: tgl
                                                                     }
                                                                 })
@@ -105,11 +106,29 @@ router.post('/gps', async (req, res) => {
                 return false
             }
         })
-        
-        const write = Sensor.add({
+
+        const userCity = await axios.get('http://api.positionstack.com/v1/reverse?access_key=eda34907d4f4305a065838523af6f860&query=' + lat + ',' + lon)
+                                    .then(function (response) {
+                                        // handle success
+                                        console.log(response.data.data[0].locality);
+                                        return response.data.data[0].locality
+                                    })
+                                    .catch(function (error) {
+                                        // handle error
+                                        console.log(error);
+                                        return false
+                                    })
+
+        const checkZone = userCity == false ? false : await Zone.doc(userCity).get().then(it => {
+            return it.exists ? it.data().title : false
+        }).catch(err => console.log(err))
+
+        const write = await Location.add({
             user_id: userCheck,
             longitude: lon,
             latitude: lat,
+            location: userCity,
+            location_status: checkZone,
             write_on: new Date()
         }).then(() => true).catch(err => console.log(err))
 

@@ -1,0 +1,3 @@
+BPM = 60 - 100
+TEMP = 36.5 - 37.5
+COUGH = DRY COUGH 
