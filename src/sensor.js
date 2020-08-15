@@ -27,7 +27,7 @@ const sensor = async (req, res) => {
             score++
         }
 
-        const loc = Location.where('user_id', '==', id).orderBy('write_on', 'asc').limit(1).get().then(it => {
+        const loc = await Location.where('user_id', '==', id).orderBy('write_on', 'asc').limit(1).get().then(it => {
             if (it.empty) {
                 return false
             } else {
