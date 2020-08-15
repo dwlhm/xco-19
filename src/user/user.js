@@ -64,7 +64,7 @@ router.get('/sensor', async (req, res) => {
     })
 
     const getData = !userCheck ? false : await Sensor.where('user_id', '==', userCheck)
-                                                        .orderBy('write_on', 'desc')
+                                                        .orderBy('write_on', 'asc')
                                                         .limit(1).get().then(it => {
                                                             if (!it.empty) {
                                                                 let data
@@ -73,13 +73,8 @@ router.get('/sensor', async (req, res) => {
                                                                     tgl = tgl.getDate() + "-" + tgl.getMonth() + "-" + tgl.getFullYear() + " " + tgl.getHours() + ":" + tgl.getMinutes() + ":" + tgl.getSeconds()
                                                                     data = {
                                                                         coughState: docs.data().cough_state,
-                                                                        coughOdd: docs.data().cough_odd,
                                                                         tempState: docs.data().temp_state,
-                                                                        tempOdd: docs.data().temp_odd,
                                                                         oxyState: docs.data().oxy_state,
-                                                                        oxyOdd: docs.data().oxy_odd,
-                                                                        locState: docs.data().loc_state,
-                                                                        locOdd: docs.data().loc_odd,
                                                                         writeOn: tgl
                                                                     }
                                                                 })
