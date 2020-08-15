@@ -2,7 +2,7 @@ const { Sensor } = require('./db/model')
 
 const sensor = async (req, res) => {
 
-    const ht = req.query.oxi
+    const ht = req.query.ht
         , temp = req.query.temp
         , cough = req.query.cough
         , id = req.query.id
@@ -12,7 +12,7 @@ const sensor = async (req, res) => {
         res.json({msg: 'Fill in the forms carefully'})        
     } else {
         let sensor = await Sensor.add({
-            oxy_state: oxi,
+            oxy_state: ht,
             temp_state: temp,
             cough_state: cough,
             user_id: id,
