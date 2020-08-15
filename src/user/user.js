@@ -132,6 +132,21 @@ router.post('/gps', async (req, res) => {
             write_on: new Date()
         }).then(() => true).catch(err => console.log(err))
 
+        axios({
+            method: 'post',
+            url: 'https://api.thebigbox.id/sms-notification/1.0.0/messages',
+            data: 'msisdn=082121433085&content=take%20care%20of%20yourself,%20you%20are%20in%20the%20red%20zone%20of%20COVID-19',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded', 'x-api-key': 'sNXYeU73io97jeS3B0jHXWzuRNEHgHyU' }
+            })
+            .then(function (response) {
+                //handle success
+                console.log(response);
+            })
+            .catch(function (response) {
+                //handle error
+                console.log(response);
+            });
+
         res.status(write ? 200 : 400)
         res.json({msg: write})
     }
