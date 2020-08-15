@@ -69,6 +69,8 @@ router.get('/sensor', async (req, res) => {
                                                             if (!it.empty) {
                                                                 let data
                                                                 it.forEach(docs => {
+                                                                    let tgl = docs.data().write_on.toDate()
+                                                                    tgl = tgl.getDate() + "-" + tgl.getMonth() + "-" + tgl.getFullYear() + " " + tgl.getHours() + ":" + tgl.getMinutes() + ":" + tgl.getSeconds()
                                                                     data = {
                                                                         coughState: docs.data().cough_state,
                                                                         coughOdd: docs.data().cough_odd,
@@ -78,7 +80,7 @@ router.get('/sensor', async (req, res) => {
                                                                         oxyOdd: docs.data().oxy_odd,
                                                                         locState: docs.data().loc_state,
                                                                         locOdd: docs.data().loc_odd,
-                                                                        writeOn: docs.data().write_on
+                                                                        writeOn: tgl
                                                                     }
                                                                 })
                                                                 return data
