@@ -27,17 +27,19 @@ const sensor = async (req, res) => {
             score++
         }
 
+        let myLoc
+
         const loc = await Location.where('user_id', '==', id).orderBy('write_on', 'asc').limit(1).get().then(it => {
             if (it.empty) {
                 return false
             } else {
-                let myLoc
+                
                 return it.forEach(it => {
                     myLoc = {
                         location: it.data().location,
                         location_status: it.data().loc_status
                     }
-                }).then(() => myLoc).catch(err => console.log(err))
+                }).then(() => true).catch(err => console.log(err))
             }
         })
 
@@ -52,8 +54,8 @@ const sensor = async (req, res) => {
             temp_state: temp,
             cough_state: cough,
             user_id: id,
-            location_state: loc.location,
-            location_odd: loc.location_status,
+            location_state: myLoc.location,
+            location_odd: myLoc.location_status,
             user_status: status,
             write_on: new Date()
         }).then(it => true).catch(err => console.log(err))
