@@ -91,9 +91,12 @@ router.post('/login', async (req, res, next) => {
 router.post('/register', async (req, res, next) => {
 
     if (!req.body.email || !req.body.password || !req.body.name || !req.body.tnc) {
+        console.log("Register 1")
         res.status(400)
         res.json({msg: 'Fill in the forms carefully'})
     } else {
+
+        console.log("register 2")
         
         let state = await User.where('email', '==', req.body.email).get().then(it => it.empty ? true : false).catch(err => console.log(err))
 

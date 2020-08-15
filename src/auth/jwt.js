@@ -9,7 +9,7 @@ const authenticateToken = async (req, res, next) => {
     if (token == null) return res.sendStatus(401)
     
     var cert = await fs.readFileSync(__dirname + '/public.key');  
-    jwt.verify(token, cert, async (err, user) => {
+    await jwt.verify(token, cert, async (err, user) => {
 
       let check
       

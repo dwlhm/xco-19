@@ -50,7 +50,7 @@ router.get('/info', async (req, res) => {
     })
 
     res.status(getInfo == false ? 400 : 200)
-    res.json({msg: getInfo})
+    res.json({name: getInfo.name, email: getInfo.email})
 })
 
 router.get('/sensor', async (req, res) => {
@@ -64,7 +64,7 @@ router.get('/sensor', async (req, res) => {
     })
 
     const getData = !userCheck ? false : await Sensor.where('user_id', '==', userCheck)
-                                                        .orderBy('write_on', 'asc')
+                                                        .orderBy('write_on', 'desc')
                                                         .limit(1).get().then(it => {
                                                             if (!it.empty) {
                                                                 let data
@@ -91,6 +91,36 @@ router.get('/sensor', async (req, res) => {
                                                 
     res.status(!getData ? 400 : 200)
     res.json(getData)
+})
+
+router.post('/gps', async (req, res) => {
+
+    const lat = req.body.lat
+    const lon = req.body.lon
+
+    if (!lat || !lon) {
+        res.status(400)
+        res.json({msg: 'Fill in the form carefully'})
+    } else {
+
+        const userCheck = await User.doc(req.user.session).get().then(it => {
+            if (it.exists) {
+                return it.data().user_id
+            } else {
+                return false
+            }
+        })
+        
+        const write = Sensor.add({
+            user_id: userCheck,
+            longitude: lon,
+            latitude: lat,
+            write_on: new Date()
+        }).then(() => true).catch(err => console.log(err))
+
+        res.status(write ? 200 : 400)
+        res.json({msg: write})
+    }
 })
 
 module.exports = router
