@@ -27,21 +27,28 @@ const sensor = async (req, res) => {
             score++
         }
 
-        let myLoc
+        console.log(id)
 
-        const loc = await Location.where('user_id', '==', id).orderBy('write_on', 'asc').limit(1).get().then(it => {
+        const loc = await Location.where('user_id', '==', id).orderBy('write_on', 'desc').limit(1).get().then(it => {
             if (it.empty) {
                 return false
             } else {
-                
-                return it.forEach(it => {
+                let myLoc
+                it.forEach(docs => {
                     myLoc = {
-                        location: it.data().location,
-                        location_status: it.data().loc_status
+                        location: docs.data().location,
+                        location_status: docs.data().location_status
                     }
-                }).then(() => true).catch(err => console.log(err))
+                    console.log(docs.data())
+                })
+
+                return myLoc
             }
         })
+
+        if (loc.location_status == "hijau") {
+            score++
+        }
 
         if (score>=4) {
             status = "Not infected with COVID-19"
@@ -49,13 +56,15 @@ const sensor = async (req, res) => {
             status = "Infected with COVID-19"
         }
 
+        console.log(loc)
+
         let sensor = await Sensor.add({
             oxy_state: ht,
             temp_state: temp,
             cough_state: cough,
             user_id: id,
-            location_state: myLoc.location,
-            location_odd: myLoc.location_status,
+            location_state: loc.location,
+            location_odd: loc.location_status,
             user_status: status,
             write_on: new Date()
         }).then(it => true).catch(err => console.log(err))

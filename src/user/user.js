@@ -61,8 +61,10 @@ router.get('/sensor', async (req, res) => {
         }
     })
 
+    console.log(userCheck)
+
     const getData = !userCheck ? false : await Sensor.where('user_id', '==', userCheck)
-                                                        .orderBy('write_on', 'asc')
+                                                        .orderBy('write_on', 'desc')
                                                         .limit(1).get().then(it => {
                                                             if (!it.empty) {
                                                                 let data
@@ -73,9 +75,9 @@ router.get('/sensor', async (req, res) => {
                                                                         coughState: docs.data().cough_state,
                                                                         tempState: docs.data().temp_state,
                                                                         oxyState: docs.data().oxy_state,
-                                                                        location: docs.data().location,
-                                                                        location_status: docs.data().location_status,
-                                                                        status: docs.data().status,
+                                                                        location: docs.data().location_state,
+                                                                        location_status: docs.data().location_odd,
+                                                                        status: docs.data().user_status,
                                                                         writeOn: tgl
                                                                     }
                                                                 })
@@ -84,6 +86,8 @@ router.get('/sensor', async (req, res) => {
                                                                 return false
                                                             }
                                                         }).catch(err => console.log(err))
+
+                                                        console.log(getData)
                                                 
     res.status(!getData ? 400 : 200)
     res.json(getData)
